@@ -24,6 +24,3 @@ db.sqlite3-journal
 opencode.json
 *.log
 .playwright-mcp/
-/.claude/
-CLAUDE.md
-/docs/plan.md

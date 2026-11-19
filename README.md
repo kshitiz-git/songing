@@ -8,6 +8,16 @@ It is a college full-stack project with a real backend: Django + Django REST Fra
 JSON API and stream audio with HTTP Range support, and a single-page frontend in plain
 HTML/CSS/JavaScript runs on top of it.
 
+![Home page](docs/screenshots/home.png)
+
+| Album | Playlist (owner can edit, reorder, remove) |
+|---|---|
+| ![Album page](docs/screenshots/album.png) | ![Playlist page](docs/screenshots/playlist.png) |
+
+| Search with genre tiles | Mobile |
+|---|---|
+| ![Search page](docs/screenshots/search.png) | ![Mobile home](docs/screenshots/mobile.png) |
+
 ## Features
 
 | Area | What works |
