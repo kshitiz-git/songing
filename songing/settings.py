@@ -23,7 +23,7 @@ def _load_dotenv(path):
     """Copy KEY=VALUE lines from a local .env file into os.environ.
 
     Real environment variables win. Blank lines and lines starting with # are ignored.
-    ponytail: tiny stdlib loader instead of the python-dotenv dependency; no quoting/escapes.
+    A few lines of stdlib instead of the python-dotenv dependency; no quoting or escapes.
     """
     if not path.is_file():
         return
