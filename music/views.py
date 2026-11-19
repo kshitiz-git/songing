@@ -2,6 +2,7 @@ import random
 from collections import Counter
 from datetime import timedelta
 
+from django.conf import settings
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import IntegrityError, transaction
 from django.db.models import Count, F, Max, OuterRef, Q, Subquery, Sum
@@ -171,6 +172,17 @@ class SongListCreateView(APIView):
         return paginated(request, self, songs, lambda page: songs_data(page, request))
 
     def post(self, request):
+        # Refuse oversized bodies before Django spools them to disk. The per-file limits are
+        # checked again below; this only stops a client from sending gigabytes first.
+        try:
+            body_size = int(request.META.get("CONTENT_LENGTH") or 0)
+        except ValueError:
+            body_size = 0
+        if body_size > settings.MAX_AUDIO_UPLOAD_BYTES + settings.MAX_COVER_UPLOAD_BYTES + 1024 * 1024:
+            return Response(
+                {"detail": "Upload is too large (audio max 25 MB, cover max 5 MB)."},
+                status=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            )
         form = SongUploadSerializer(data=request.data)
         form.is_valid(raise_exception=True)
         data = form.validated_data

@@ -173,6 +173,10 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'songing.exceptions.api_exception_handler',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 30,
+    # Throttles key anonymous clients by IP. 0 = trust only REMOTE_ADDR, so a client cannot
+    # dodge the login limit by sending a fake X-Forwarded-For. Set to the number of reverse
+    # proxies in front of Django when deploying behind one.
+    'NUM_PROXIES': 0,
     'DEFAULT_THROTTLE_RATES': {
         # Login / signup per client IP. Slows password guessing and signup spam.
         'auth': '10/minute',
