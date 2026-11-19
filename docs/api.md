@@ -83,18 +83,18 @@ Auth endpoints are rate limited (429 `{"detail": ...}` when exceeded).
 | Method | Path | Result |
 |---|---|---|
 | GET | `/api/home/` | `{"trending": [Song x<=10], "new_releases": [Album x<=10], "artists": [Artist x<=10], "recently_played": [Song x<=10], "made_for_you": [Song x<=10]}`. `recently_played` is `[]` when logged out. Trending = most plays in the last 7 days, then all-time plays |
-| GET | `/api/songs/?q=&genre=&page=` | paginated Song list (public songs + the user's own private uploads) |
+| GET | `/api/songs/?q=&genre=&page=` | paginated Song list (public songs + the user's own private uploads). `q` matches song title or artist name; `genre` is an exact, case-insensitive match |
 | GET | `/api/songs/<id>/` | Song |
 | GET | `/api/albums/?page=` / `/api/albums/<id>/` | paginated Album list / Album detail |
 | GET | `/api/artists/?page=` / `/api/artists/<id>/` | paginated Artist list / Artist detail |
 | GET | `/api/genres/` | `["Ambient", "Lo-fi", ...]` (genres that have at least one visible song) |
-| GET | `/api/search/?q=` | `{"songs": [Song x<=20], "artists": [Artist x<=10], "albums": [Album x<=10], "playlists": [Playlist x<=10]}`; empty lists when `q` is blank. Matches title / name, case-insensitive. Playlists = public ones + the user's own |
+| GET | `/api/search/?q=` | `{"songs": [Song x<=20], "artists": [Artist x<=10], "albums": [Album x<=10], "playlists": [Playlist x<=10]}`; empty lists when `q` is blank. Matches title / name, case-insensitive (songs also match on artist name). Playlists = public ones + the user's own |
 
 ### Playback
 | Method | Path | Result |
 |---|---|---|
 | GET | `/api/songs/<id>/stream/` | the audio file. Supports `Range: bytes=a-b` (206 Partial Content), so seeking works. Private song of another user: 404 |
-| POST | `/api/songs/<id>/play/` | 204. Records one play (counts toward trending and, when logged in, recently played). The frontend calls it once per song after 30 s of listening, or at the end of a song shorter than 30 s |
+| POST | `/api/songs/<id>/play/` | 204. Rate limited (429). Records one play (counts toward trending and, when logged in, recently played). The frontend calls it once per song after 30 s of listening, or at the end of a song shorter than 30 s |
 
 ### Your library (logged in; 403 otherwise)
 | Method | Path | Body | Result |
@@ -116,5 +116,5 @@ Auth endpoints are rate limited (429 `{"detail": ...}` when exceeded).
 | PATCH | `/api/playlists/<id>/` | any of `name`, `description`, `is_public` | 200 Playlist detail, owner only |
 | DELETE | `/api/playlists/<id>/` | | 204, owner only |
 | POST | `/api/playlists/<id>/songs/` | `{"song_id"}` | 201 Playlist detail; adding a song already in it returns 200 unchanged |
-| DELETE | `/api/playlists/<id>/songs/<song_id>/` | | 204 |
+| DELETE | `/api/playlists/<id>/songs/<song_id>/` | | 204 (idempotent); positions are renumbered |
 | POST | `/api/playlists/<id>/reorder/` | `{"song_ids": [ids in the new order]}` | 200 Playlist detail. Must contain exactly the playlist's songs, else 400 |

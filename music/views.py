@@ -16,6 +16,7 @@ from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
+from .catalog import existing_or_new_album, existing_or_new_artist
 from .models import Album, Artist, Like, PlayEvent, Playlist, PlaylistItem, Song, visible_song_q
 from .serializers import (
     AddSongSerializer,
@@ -118,28 +119,6 @@ def made_for_you(user, limit=10):
         picks += list(songs.exclude(id__in=taken).order_by("?")[: limit - len(picks)])
     random.shuffle(picks)
     return picks
-
-
-def existing_or_new_artist(name):
-    artist = Artist.objects.filter(name__iexact=name).first()
-    if artist:
-        return artist
-    try:
-        with transaction.atomic():
-            return Artist.objects.create(name=name)
-    except IntegrityError:  # created by a parallel request
-        return Artist.objects.get(name__iexact=name)
-
-
-def existing_or_new_album(title, artist):
-    album = Album.objects.filter(title__iexact=title, artist=artist).first()
-    if album:
-        return album
-    try:
-        with transaction.atomic():
-            return Album.objects.create(title=title, artist=artist)
-    except IntegrityError:
-        return Album.objects.get(title__iexact=title, artist=artist)
 
 
 def get_visible_song(user, pk):
