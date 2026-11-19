@@ -52,9 +52,22 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=128, trim_whitespace=False)
 
 
+class ClientIPRateThrottle(ScopedRateThrottle):
+    """The "auth" limit, always counted per client IP.
+
+    DRF's ScopedRateThrottle counts a logged-in request against the user id. Signup logs the
+    client in, so each new account would start a fresh count and signups would never be
+    limited. Counting by IP closes that, and also stops a logged-in attacker from getting a
+    separate login-guess budget per account.
+    """
+
+    def get_cache_key(self, request, view):
+        return self.cache_format % {"scope": self.scope, "ident": self.get_ident(request)}
+
+
 class AuthThrottledView(APIView):
     authentication_classes = [CsrfAlwaysSessionAuthentication]
-    throttle_classes = [ScopedRateThrottle]
+    throttle_classes = [ClientIPRateThrottle]
     throttle_scope = "auth"
 
 
