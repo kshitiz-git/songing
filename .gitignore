@@ -23,3 +23,5 @@ db.sqlite3-journal
 .glm/
 opencode.json
 *.log
+.playwright-mcp/
+/.claude/CONTEXT_STATE.md

@@ -1,0 +1,94 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0a0a0b">
+  <meta name="description" content="Songing, a music streaming app with free and Creative Commons music.">
+  <title>Songing</title>
+  <link rel="icon" href="{% static 'songing/img/logo.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'songing/css/app.css' %}">
+  <script type="module" src="{% static 'songing/js/app.js' %}"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="app" id="app">
+    <header class="topbar">
+      <button type="button" class="icon-btn menu-btn" id="drawer-toggle" aria-label="Open your library" aria-expanded="false" aria-controls="library"><i data-icon="menu"></i></button>
+      <a class="brand" href="/" aria-label="Songing home"><img src="{% static 'songing/img/logo.svg' %}" alt="" width="34" height="34"><span class="brand-name">Songing</span></a>
+      <a class="home-btn" href="/" aria-label="Home" title="Home"><i data-icon="home"></i></a>
+      <form class="search" id="search-form" role="search" autocomplete="off">
+        <label class="sr-only" for="search-input">Search songs, artists, albums and playlists</label>
+        <i class="search-ico" data-icon="search"></i>
+        <input id="search-input" name="q" type="text" inputmode="search" enterkeyhint="search" maxlength="100" placeholder="What do you want to play?" autocomplete="off" spellcheck="false">
+        <button type="button" class="search-clear" id="search-clear" aria-label="Clear search" hidden><i data-icon="close"></i></button>
+        <span class="search-divider" aria-hidden="true"></span>
+        <a class="browse-btn" href="/search" aria-label="Browse all genres" title="Browse all"><i data-icon="library"></i></a>
+      </form>
+      <div class="topbar-auth" id="topbar-auth"></div>
+    </header>
+
+    <nav class="library" id="library" aria-label="Your library">
+      <div class="lib-head">
+        <h2><i data-icon="library"></i> Your Library</h2>
+        <button type="button" class="icon-btn" id="create-playlist" aria-label="Create playlist" title="Create playlist"><i data-icon="plus"></i></button>
+      </div>
+      <div class="lib-body" id="lib-body"></div>
+      <p class="lib-foot">Songing plays free and Creative Commons music. Credits are on each album and playlist page.</p>
+    </nav>
+
+    <main class="main" id="main" tabindex="-1" aria-label="Songing"></main>
+
+    <footer class="player is-empty" id="player" aria-label="Player">
+      <div class="pl-line" aria-hidden="true"><i></i></div>
+      <button type="button" class="icon-btn pl-collapse" id="pl-collapse" aria-label="Close full player"><i data-icon="down"></i></button>
+
+      <div class="pl-now" id="pl-now">
+        <div class="pl-cover" id="pl-cover"></div>
+        <div class="pl-meta">
+          <div class="pl-title" id="pl-title"></div>
+          <div class="pl-artist" id="pl-artist"></div>
+        </div>
+        <span class="pl-heart" id="pl-heart"></span>
+        <button type="button" class="pl-expand" id="pl-expand" aria-label="Open full player" aria-expanded="false"></button>
+      </div>
+
+      <div class="pl-center">
+        <div class="pl-controls">
+          <button type="button" class="icon-btn pl-shuffle" id="pl-shuffle" aria-label="Shuffle" title="Shuffle" aria-pressed="false"><i data-icon="shuffle"></i></button>
+          <button type="button" class="icon-btn" id="pl-prev" aria-label="Previous" title="Previous"><i data-icon="prev"></i></button>
+          <button type="button" class="pl-play" id="pl-play" aria-label="Play" title="Play"><i data-icon="play"></i></button>
+          <button type="button" class="icon-btn" id="pl-next" aria-label="Next" title="Next"><i data-icon="next"></i></button>
+          <button type="button" class="icon-btn pl-repeat" id="pl-repeat" aria-label="Repeat: off" title="Repeat: off" aria-pressed="false"><i data-icon="repeat"></i></button>
+        </div>
+        <div class="pl-seek">
+          <span class="pl-time" id="pl-cur">0:00</span>
+          <input type="range" class="range" id="pl-seek" aria-label="Seek" min="0" max="0" step="0.1" value="0">
+          <span class="pl-time" id="pl-dur">0:00</span>
+        </div>
+      </div>
+
+      <div class="pl-right">
+        <button type="button" class="icon-btn" id="pl-queue-btn" aria-label="Queue" title="Queue" aria-controls="queue" aria-pressed="false"><i data-icon="queue"></i></button>
+        <button type="button" class="icon-btn" id="pl-mute" aria-label="Mute" title="Mute" aria-pressed="false"><i data-icon="volume"></i></button>
+        <input type="range" class="range pl-volume" id="pl-volume" aria-label="Volume" min="0" max="1" step="0.01" value="0.8">
+      </div>
+    </footer>
+  </div>
+
+  <aside class="queue" id="queue" aria-label="Queue" hidden>
+    <div class="queue-head">
+      <h2>Queue</h2>
+      <button type="button" class="icon-btn" id="queue-close" aria-label="Close queue"><i data-icon="close"></i></button>
+    </div>
+    <div class="queue-body" id="queue-body"></div>
+  </aside>
+
+  <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+  <div class="sr-only" id="route-announcer" aria-live="polite"></div>
+  <noscript><p class="noscript">Songing needs JavaScript to run. Turn it on and reload the page.</p></noscript>
+</body>
+</html>
