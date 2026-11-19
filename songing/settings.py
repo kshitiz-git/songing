@@ -13,20 +13,43 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
+def _load_dotenv(path):
+    """Copy KEY=VALUE lines from a local .env file into os.environ.
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-insecure-key")
+    Real environment variables win. Blank lines and lines starting with # are ignored.
+    ponytail: tiny stdlib loader instead of the python-dotenv dependency; no quoting/escapes.
+    """
+    if not path.is_file():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        os.environ.setdefault(key.strip(), value.strip())
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+_load_dotenv(BASE_DIR / ".env")
+
+# Secure by default: DEBUG is on only when DJANGO_DEBUG says so.
+DEBUG = os.environ.get("DJANGO_DEBUG", "").strip().lower() in {"1", "true", "yes", "on"}
+
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
+if not SECRET_KEY:
+    if not DEBUG:
+        raise ImproperlyConfigured(
+            "DJANGO_SECRET_KEY is not set and DJANGO_DEBUG is off. Refusing to start. "
+            "Copy .env.example to .env (local dev) or set the environment variables."
+        )
+    SECRET_KEY = "dev-only-insecure-key-never-use-in-production"
+
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()]
 
 
 # Application definition
@@ -38,6 +61,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'accounts',
+    'music',
+    'frontend',
 ]
 
 MIDDLEWARE = [
@@ -116,6 +143,49 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Covers and other public uploads, served at /media/ by the dev server.
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Song audio is never served as a plain file: only through /api/songs/<id>/stream/,
+# which checks who may hear it and supports HTTP Range requests.
+PRIVATE_MEDIA_ROOT = BASE_DIR / 'private_media'
+
+MAX_AUDIO_UPLOAD_BYTES = 25 * 1024 * 1024
+MAX_COVER_UPLOAD_BYTES = 5 * 1024 * 1024
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ],
+    'EXCEPTION_HANDLER': 'songing.exceptions.api_exception_handler',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 30,
+    'DEFAULT_THROTTLE_RATES': {
+        # Login / signup per client IP. Slows password guessing and signup spam.
+        'auth': '10/minute',
+        # Play reports per user or IP. A real listener sends about 2 per minute.
+        'play': '60/minute',
+    },
+}
+
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_REFERRER_POLICY = 'same-origin'
 
 
 # Email
