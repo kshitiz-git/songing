@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="gen_style.css" />
+    <script src="script.js"></script>
+    <title>SPOTIFY</title>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navsec navsec-left">
+        
+        <button class="logo navbtn"><img src="spotify.svg" alt="Spotify"></button>
+
+        <button class="home"><img src="home.svg" alt="Home"></button>
+        
+        <div class="search">
+          <div class="search-svg"><img src="search.svg" alt="Search"></div>
+          
+          <input type="text" placeholder="What do you want to play? " class="inpu"></input>
+          
+          <div class="divider"></div>
+
+          <div class="browse-svg"><img src="browse.svg" alt="Browse playlist"></div>
+          
+        </div>
+        
+      </div>  
+
+      <div class="navsec navsec-right">
+        
+        <span class="whitetext">Premium</span>
+        <span class="whitetext">Support</span>
+        <span class="whitetext">Download</span>
+        <span class="whitetext">|</span>
+        <span class="whitetext">Install App</span>
+        <span class="whitetext">Sign up</span>
+        <button class="btn">Log in</button>
+
+      </div>  
+    </nav>
+
+
+    <div class="section">
+      <div class="section-left">
+        <div class="container-left">
+          <div class="whitetext text1">
+            <span><h3>Your Library</h3></span>
+            <span><h3>+</h3></span>
+          </div>
+
+          <div class="whitetext text2 scroll">
+            <div class="browse whitetext">
+              <h3>Create Your First Playlist</h3>
+              <h4 class="makeitlight">It's easy, We'll help you</h4>
+              <button class="btn">Create playlist</button>
+            </div>
+
+            <div class="browse">
+              <h3>Let's find some podcasts to follow</h3>
+              <h4 class="makeitlight">
+                We'll keep you updated on new episodes
+              </h4>
+              <button class="btn stre">Browse padcasts</button>
+            </div>
+          </div>
+
+          <div class="whitetext text3">
+            <span>Legal</span>
+            <span>Safety & Privacy Center</span>
+            <span>Privacy Policy</span>
+            <span>Cookies</span>
+            <span>About Ads</span>
+            <span>Accessibility</span>
+          </div>
+
+          <div class="whitetext text4">
+            <span class="cook">Cookies</span>
+            <button class="btn-black btn">English</button>
+          </div>
+
+        </div>
+      </div>
+      
+      <!-- <div class="underScrollbar"> -->
+      <div class="section-right">
+        <h1 class="whitetext">Trending Songs</h1>
+        <div class="playlist">
+          <div class="card"> </div>
+          <div class="card"> </div>
+          <div class="card"> </div>
+          <div class="card"> </div>
+          <div class="card"> </div>
+          <div class="card"> </div>
+          <div class="card"> </div>
+        </div>
+
+        <div class="songlist whitetext">
+          <ul class = "table">
+            <!-- TEST LI -->
+            <!-- <li> 
+              <img src="MUSIC.svg" alt=" ">
+              song name<br>
+              artist
+              <img src="SONG.svg" alt=" ">
+            </li> -->
+
+          </ul>
+        </div>
+
+  
+
+        <div class="playmenu">
+          <button class="boot navbtn"><img src="previous.svg" alt="Previous"></button>
+
+          <button onclick="main()" ondoubleclick class="boot navbtn"><img src="play.svg" alt="Play"></button>
+
+          <button class="boot navbtn"><img src="next.svg" alt="Next"></button>
+
+        </div>
+
+      </div>
+    </div>
+  <!-- </div> -->
+  </body>
+</html>
